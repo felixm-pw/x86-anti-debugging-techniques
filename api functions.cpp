@@ -1,8 +1,5 @@
 #include <iostream>
-#include <Windows.h>
-#include <vector>
-#include <winnt.h>
-#include <winternl.h>
+#include <windows.h>
 
 bool example_1() {
     bool debugger_status = IsDebuggerPresent();
@@ -10,24 +7,14 @@ bool example_1() {
 }
 
 bool example_2() {
-    std::vector <LPCWSTR> program_list(1, (L"notepad"));
-
-    for (int i = 0; i < int(program_list.size()); i++) {
-        HWND window = FindWindow(program_list[i], NULL);
-        if (window != NULL) {         
-            return(true);
-        }
-    }
-    return(false);
+    BOOL debugger_exists = false;
+    CheckRemoteDebuggerPresent(GetCurrentProcess(), &debugger_exists);
+    return(debugger_exists);
 }
 
-int main()
-{
+int main() {
     while (true) {
-        bool case_1 = example_1();
-        bool case_2 = example_2();
-
-        if (case_1 || case_2 == true) {
+        if (example_1() || example_2() == true) {
            return(0);
         }
     }
